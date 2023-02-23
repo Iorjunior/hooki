@@ -7,9 +7,14 @@ authors = ["iorjunior <juniorcoda@gmail.com>"]
 [tool.poetry.dependencies]
 python = "^3.10"
 Flask = "^2.2.3"
+Flask-SQLAlchemy = "^3.0.3"
+Flask-Migrate = "^4.0.4"
+marshmallow-sqlalchemy = "^0.28.1"
+flask-marshmallow = "^0.14.0"
 
 [tool.poetry.dev-dependencies]
 commitizen = "^2.42.0"
+autopep8 = "^2.0.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
