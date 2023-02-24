@@ -114,6 +114,18 @@ async = ["asgiref (>=3.2)"]
 dotenv = ["python-dotenv"]
 
 [[package]]
+name = "flask-login"
+version = "0.6.2"
+description = "User authentication and session management for Flask."
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[package.dependencies]
+Flask = ">=1.0.4"
+Werkzeug = ">=1.0.1"
+
+[[package]]
 name = "flask-marshmallow"
 version = "0.14.0"
 description = "Flask + marshmallow for beautiful APIs"
@@ -404,7 +416,7 @@ watchdog = ["watchdog"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "9b148767e71be4e80f7575eb28217d28538056f94438e0693ec7721ce5ef7647"
+content-hash = "00946a2296997abac428a80721264f7f945a57526303623cc8522e3bf1d3aa48"
 
 [metadata.files]
 alembic = []
@@ -416,6 +428,7 @@ colorama = []
 commitizen = []
 decli = []
 flask = []
+flask-login = []
 flask-marshmallow = []
 flask-migrate = []
 flask-sqlalchemy = []

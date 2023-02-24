@@ -11,6 +11,7 @@ Flask-SQLAlchemy = "^3.0.3"
 Flask-Migrate = "^4.0.4"
 marshmallow-sqlalchemy = "^0.28.1"
 flask-marshmallow = "^0.14.0"
+Flask-Login = "^0.6.2"
 
 [tool.poetry.dev-dependencies]
 commitizen = "^2.42.0"
