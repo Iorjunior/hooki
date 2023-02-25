@@ -1,9 +1,13 @@
-from flask import Blueprint, jsonify, current_app, request
+from flask import Blueprint, render_template
+from flask_login import login_required
 
+from models.models import Task
 
 main_blueprint = Blueprint('main', __name__)
 
 
 @main_blueprint.route("/", methods=['GET'])
+@login_required
 def main():
-    return jsonify({'status': 'ok'}), 200
+    query = Task.query.all()
+    return render_template('index.html', tasks=query)
