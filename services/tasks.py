@@ -67,12 +67,12 @@ def execute_task(id):
             process = subprocess.run(
                 f"./{task.command}", shell=True, stdout=subprocess.PIPE, cwd=task.directory)
             res = [r for r in str(process.stdout, 'UTF-8').split("\n") if r]
-            
+
             task.last_run = datetime.now()
             current_app.db.session.commit()
-            return jsonify(res)
+            return jsonify(res), 200
 
         except Exception as e:
-            return jsonify({'Error': str(e)})
+            return jsonify({'Error': str(e)}), 200
 
-    return jsonify("Unauthorized")
+    return jsonify("Unauthorized"), 401
