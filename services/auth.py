@@ -51,7 +51,7 @@ def logout():
 @auth_blueprint.cli.command("create-user")
 @click.argument('username')
 def create_user(username):
-    if not User.query.filter_by(username=username):
+    if not User.query.filter_by(username=username).first():
         password = generate_passwork()
 
         user = User(
