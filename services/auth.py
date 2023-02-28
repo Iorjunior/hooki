@@ -1,6 +1,9 @@
-from flask import Blueprint, request, redirect, url_for, render_template
+import click
+
+from flask import Blueprint, request, redirect, url_for, render_template, current_app
 from flask_login import LoginManager, login_user, logout_user, login_required
 
+from utils.hash import generate_passwork
 from models.models import User
 from datetime import timedelta
 
@@ -43,3 +46,23 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('auth.login'))
+
+
+@auth_blueprint.cli.command("create-user")
+@click.argument('username')
+def create_user(username):
+    if not User.query.filter_by(username=username):
+        password = generate_passwork()
+
+        user = User(
+            username=username,
+            password=password
+        )
+
+        current_app.db.session.add(user)
+        current_app.db.session.commit()
+
+        print(
+            f"[✓] - User {username} created successfully! \nPassword: {password}")
+    else:
+        print(f"[X] - User {username} Already exists!")
