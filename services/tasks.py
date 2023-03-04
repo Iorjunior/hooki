@@ -1,4 +1,5 @@
 import subprocess
+import os
 
 from flask import Blueprint, jsonify, current_app, request
 from flask_login import login_required
@@ -22,15 +23,20 @@ def all_tasks():
 @login_required
 def create_task():
     json_data = request.get_json()
-    json_data['token'] = generate_token()
 
-    task = Task(**json_data)
+    if os.path.isfile(f"{json_data['directory']}/{json_data['command']}"):
+        json_data['token'] = generate_token()
 
-    current_app.db.session.add(task)
-    current_app.db.session.commit()
+        task = Task(**json_data)
 
-    query = Task.query.get(task.id)
-    return TaskSchema().jsonify(query), 201
+        current_app.db.session.add(task)
+        current_app.db.session.commit()
+
+        query = Task.query.get(task.id)
+
+        return TaskSchema().jsonify(query), 201
+    else:
+        return jsonify({'Error': "The file does not exist"}), 204
 
 
 @tasks_blueprint.route("/update/<id>", methods=['POST'])
@@ -65,12 +71,16 @@ def execute_task(id):
     if json_data['token'] == task.token:
         try:
             process = subprocess.run(
-                f"./{task.command}", shell=True, stdout=subprocess.PIPE, cwd=task.directory)
-            res = [r for r in str(process.stdout, 'UTF-8').split("\n") if r]
+                f"./{task.command}", stdout=subprocess.PIPE, cwd=task.directory)
 
-            task.last_run = datetime.now()
-            current_app.db.session.commit()
-            return jsonify(res), 200
+            if process.stdout is not None:
+                result = [r for r in str(
+                    process.stdout, 'UTF-8', errors="backslashreplace").split("\n") if r]
+
+                task.last_run = datetime.now()
+                current_app.db.session.commit()
+
+                return jsonify(result), 200
 
         except Exception as e:
             return jsonify({'Error': str(e)}), 200
