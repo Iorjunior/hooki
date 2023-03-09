@@ -17,7 +17,8 @@ DB_URL = env("DB_URL")
 def create_app():
     app = Flask(__name__, static_url_path=f'{URL_PREFIX}/static')
     app.config['SECRET_KEY'] = SECRET_KEY
-    app.config["SQLALCHEMY_DATABASE_URI"] = DB_URL
+    app.config['SQLALCHEMY_DATABASE_URI'] = DB_URL
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     config_db(app)
     config_ma(app)
