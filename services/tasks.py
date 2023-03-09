@@ -4,10 +4,12 @@ import os
 from flask import Blueprint, jsonify, current_app, request
 from flask_login import login_required
 from datetime import datetime
+from threading import Thread
 
 from models.models import Task
 from models.serializers import TaskSchema
 from utils.hash import generate_token
+from utils.task import execute_task_background
 
 tasks_blueprint = Blueprint('tasks', __name__)
 
@@ -70,18 +72,11 @@ def execute_task(id):
 
     if json_data['token'] == task.token:
         try:
-            process = subprocess.run(
-                f"./{task.command}", stdout=subprocess.PIPE, cwd=task.directory)
+            thread = Thread(target=execute_task_background, args=(task.command, task.directory))
+            thread.daemon = True
+            thread.start()
 
-            if process.stdout is not None:
-                result = [r for r in str(
-                    process.stdout, 'UTF-8', errors="backslashreplace").split("\n") if r]
-
-                task.last_run = datetime.now()
-                current_app.db.session.commit()
-
-                return jsonify(result), 200
-
+            return jsonify({"task":"started"}), 200
         except Exception as e:
             return jsonify({'Error': str(e)}), 200
 
